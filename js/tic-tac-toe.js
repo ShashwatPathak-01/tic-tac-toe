@@ -1,102 +1,99 @@
-// TIC TAC TOE
+// Just a user friendly tic-tac-toe game
+// Basically this a Beginner's project
+
+
 const tic_tac_toe = {
-
-    // ATTRIBUTES
+    // Game state variables
     board: ['','','','','','','','',''],
-    symbols: {
-                options: ['O','X'],
-                turn_index: 0,
-                change(){
-                    this.turn_index = ( this.turn_index === 0 ? 1:0 );
-                }
-            },
-    container_element: null,
+    symbols: ['O', 'X'], // Player symbols
+    currentPlayer: 0, // Index for current player
     gameover: false,
-    winning_sequences: [
-                        [0,1,2],
-                        [3,4,5],
-                        [6,7,8],
-                        [0,3,6],
-                        [1,4,7],
-                        [2,5,8],
-                        [0,4,8],
-                        [2,4,6]
-                    ],
+    container_element: null,
 
-    // FUNCTIONS
+    // Winning patterns
+    winning_sequences: [
+        [0,1,2], [3,4,5], [6,7,8], // Rows
+        [0,3,6], [1,4,7], [2,5,8], // Columns
+        [0,4,8], [2,4,6]           // Diagonals
+    ],
+
+    // Initialize game with a container
     init(container) {
         this.container_element = container;
+        this.start();
     },
 
+    // Handle player move
     make_play(position) {
-        if (this.gameover || this.board[position] !== '') return false;
+        if (this.gameover || this.board[position] !== '') {
+            console.log("Invalid move!");
+            return;
+        }
 
-        const currentSymbol = this.symbols.options[this.symbols.turn_index];
-        this.board[position] = currentSymbol;
+        // Place symbol and update board
+        this.board[position] = this.symbols[this.currentPlayer];
         this.draw();
 
-        const winning_sequences_index = this.check_winning_sequences(currentSymbol);
-        if (this.is_game_over()){
-            this.game_is_over();
-        }
-        if (winning_sequences_index >= 0) {
-            this.game_is_over();
-            this.stylize_winner_sequence(this.winning_sequences[winning_sequences_index]);
-        } else {
-            this.symbols.change();
+        // Check if there's a winner
+        if (this.check_winner()) {
+            this.gameover = true;
+            console.log(`Player ${this.symbols[this.currentPlayer]} wins!`);
+            return;
         }
 
-        return true;
+        // Check if it's a draw
+        if (!this.board.includes('')) {
+            this.gameover = true;
+            console.log("It's a draw!");
+            return;
+        }
+
+        // Switch player turn
+        this.currentPlayer = (this.currentPlayer === 0) ? 1 : 0;
     },
 
-    stylize_winner_sequence(winner_sequence) {
-        winner_sequence.forEach((position) => {
-          this
-            .container_element
-            .querySelector(`div:nth-child(${position + 1})`)
-            .classList.add('winner');
-        });
-      },
-
-    check_winning_sequences(symbol) {
-
-        for ( i in this.winning_sequences ) {
-            if (this.board[ this.winning_sequences[i][0] ] == symbol  &&
-                this.board[ this.winning_sequences[i][1] ] == symbol &&
-                this.board[ this.winning_sequences[i][2] ] == symbol) {
-                console.log('winning sequences INDEX:' + i);
-                return i;
+    // Check if there's a winner
+    check_winner() {
+        for (let sequence of this.winning_sequences) {
+            let [a, b, c] = sequence;
+            if (this.board[a] && this.board[a] === this.board[b] && this.board[a] === this.board[c]) {
+                this.highlight_winner(sequence);
+                return true;
             }
-        };
-        return -1;
+        }
+        return false;
     },
 
-    game_is_over() {
-        this.gameover = true;
-        console.log('GAME OVER');
+    // Highlight winning sequence
+    highlight_winner(sequence) {
+        sequence.forEach(pos => {
+            this.container_element.children[pos].classList.add('winner');
+        });
     },
 
-    is_game_over() {
-        return !this.board.includes('');
-    },
-
-    start() {
-        this.board.fill('');
-        this.draw();
-        this.gameover = false;       
-    },
-
+    // Restart the game
     restart() {
-        if (this.is_game_over() || this.gameover) {
+        if (confirm("Are you sure you want to restart?")) {
             this.start();
-            console.log('this game has been restarted!')
-        } else if (confirm('Are you sure you want to restart this game?')) {
-            this.start();
-            console.log('this game has been restarted!')
         }
     },
 
-    draw() {
-        this.container_element.innerHTML = this.board.map((element, index) => `<div onclick="tic_tac_toe.make_play('${index}')"> ${element} </div>`).reduce((content, current) => content + current);
+    // Start a new game
+    start() {
+        this.board = ['','','','','','','','',''];
+        this.gameover = false;
+        this.currentPlayer = 0;
+        this.draw();
     },
+
+    // Draw the board in the HTML container
+    draw() {
+        this.container_element.innerHTML = '';
+        for (let i = 0; i < this.board.length; i++) {
+            let cell = document.createElement("div");
+            cell.innerText = this.board[i];
+            cell.onclick = () => this.make_play(i);
+            this.container_element.appendChild(cell);
+        }
+    }
 };

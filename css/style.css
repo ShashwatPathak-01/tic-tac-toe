@@ -9,14 +9,14 @@ body {
   width: 100vw;
   height: 100vw;
   margin: 0 auto;
-  background-color: #34495e;
+  background-color: #3b3b58;  /* Softer dark purple */
   color: #fff;
   display: grid;
-  grid-template: repeat(3, 1fr) / repeat(3, 1fr)
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
 }
 
-.game>div {
-  border: 6px solid #2c3e50;
+.game > div {
+  border: 6px solid #1f2833; /* Darker border for contrast */
   font-family: Helvetica;
   font-weight: bold;
   font-size: 4em;
@@ -26,19 +26,19 @@ body {
 }
 
 .btn {
-  border: 5px solid #2c3e50;
-  background-color: #34495e;
+  border: 5px solid #1f2833;
+  background-color: #6a0dad; /* Deep purple */
   color: white;
   margin-top: 10px;
-  padding: 10px 20px
+  padding: 10px 20px;
 }
 
 .game > div.winner {
-  background: yellow;
+  background: #023786; /* Dark blue instead of yellow */
 }
 
 .game > div.winner > span {
-  color: blue;
+  color: #00509e; /* Dark blue for contrast */
 }
 
 @media (min-width: 600px) {
@@ -46,16 +46,16 @@ body {
     width: 600px;
     height: 600px;
     border-radius: 10px;
-    border: 6px solid #2c3e50;
+    border: 6px solid #1f2833;
   }
 
-  .game>div {
+  .game > div {
     border-radius: 2px;
   }
 }
 
 @media (min-width: 1024px) {
   .btn {
-    cursor: pointer
+    cursor: pointer;
   }
 }
